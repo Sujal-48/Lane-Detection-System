@@ -1,0 +1,4 @@
+Sabse important 3:
+Sigmoid: 1/(1+e⁻ᶻ) //
+BCE: −[y·log p + (1−y)·log(1−p)]
+Dice loss: 1 − (2·Σpy)/(Σp + Σy)

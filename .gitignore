@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.py[cod]
+checkpoints/*.pth
+checkpoints/*.png
+data/images/*
+!data/images/.gitkeep
+*.mp4
+data/masks/*
+!data/masks/.gitkeep

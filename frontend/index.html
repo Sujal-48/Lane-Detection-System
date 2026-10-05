@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LaneSight — Lane Detection Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+      <rect width="34" height="34" rx="8" fill="#17253A"/>
+      <clipPath id="roadClip"><rect width="34" height="34" rx="8"/></clipPath>
+      <g clip-path="url(#roadClip)">
+        <path d="M9 6 C9 14, 13 20, 13 28" stroke="#3FD9D0" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M25 6 C25 14, 21 20, 21 28" stroke="#3FD9D0" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path class="lane-center-mark" d="M17 2 L17 34" stroke="#F5C542" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="4 4"/>
+      </g>
+    </svg>
+    <div>
+      <h1>LaneSight</h1>
+      <p>Lane detection dashboard — shell v0.1</p>
+    </div>
+  </div>
+  <div class="status-pill" id="statusPill">
+    <span class="dot"></span>
+    <span id="statusText">Idle — no feed loaded</span>
+  </div>
+</header>
+
+<main>
+  <section class="stage">
+    <div class="viewport" id="viewport">
+      <video id="video" muted playsinline></video>
+      <img id="imagePreview" alt="Uploaded road image" hidden>
+      <canvas id="overlay"></canvas>
+      <div class="empty-state" id="emptyState">
+       <strong>No image or video loaded</strong>
+       <span>Upload a driving video or road image to test lane detection.</span>
+      </div>
+    </div>
+    <div class="stage-footer">
+      <label for="fileInput">
+        <button type="button" id="uploadBtn">Upload video / image</button>
+      </label>
+      <input type="file" id="fileInput" accept="video/*,image/*">
+      <button type="button" id="playBtn" disabled>Play</button>
+      <button type="button" class="danger-outline" id="resetBtn" disabled>Reset</button>
+      <div class="spacer"></div>
+      <label class="overlay-toggle">
+        <input type="checkbox" id="overlayToggle" checked>
+        Show lane overlay
+      </label>
+      <button type="button" class="primary" id="detectBtn" disabled>Start detection</button>
+    </div>
+  </section>
+
+  <aside>
+    <div class="card">
+      <h2>Live telemetry</h2>
+      <div class="metric-row">
+        <span class="label">Detection status</span>
+        <span class="value mono" id="mStatus">Standby</span>
+      </div>
+      <div class="metric-row">
+        <span class="label">Left lane confidence</span>
+        <span class="value mono cyan" id="mLeft">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="label">Right lane confidence</span>
+        <span class="value mono cyan" id="mRight">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="label">Curvature radius</span>
+        <span class="value mono" id="mCurve">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="label">Vehicle offset</span>
+        <span class="value mono yellow" id="mOffset">—</span>
+      </div>
+      <div class="offset-track"><div class="offset-marker" id="offsetMarker"></div></div>
+    </div>
+
+    <div class="card">
+      <h2>Pipeline</h2>
+      <div class="pipeline-list" id="pipelineList">
+        <div class="pipeline-item" data-step="0"><span class="step-dot"></span> Frame capture</div>
+        <div class="pipeline-item" data-step="1"><span class="step-dot"></span> Preprocess (grayscale + blur)</div>
+        <div class="pipeline-item" data-step="2"><span class="step-dot"></span> Edge detection (Canny)</div>
+        <div class="pipeline-item" data-step="3"><span class="step-dot"></span> ROI mask + Hough transform</div>
+        <div class="pipeline-item" data-step="4"><span class="step-dot"></span> Lane fit + overlay render</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Session log</h2>
+      <div class="log-box mono" id="logBox">
+        <div class="log-line"><span>00:00</span>dashboard initialized, waiting for input</div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
